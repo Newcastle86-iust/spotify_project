@@ -48,7 +48,7 @@ def main():
         print("8. Exit")
         print("================================================================================")
         
-        choice = input("Enter your choice (1-7): ")
+        choice = input("Enter your choice (1-8): ")
 
         if choice == '1':
             df_raw = loader.load_data()
@@ -216,6 +216,7 @@ def main():
             print("1. Compare Outliers (Box Plot)")
             print("2. Compare Trends (Scatter Plot)")
             print("3. Show Distribution (Hist Plot)")
+            print("4. Compare Genres Trends (Scatter Plot)")
             sub_choice = input("Select plot type: ")
             
             vis = DataVisualizer(df_raw, current_df, label_before="Raw Data", label_after=processing_label)
@@ -231,6 +232,12 @@ def main():
                 elif sub_choice == '3':
                     col = vis.get_valid_column("Enter column for Distribution")
                     vis.plot_distribution(col)
+
+                elif sub_choice == '4':
+                    col1 = vis.get_valid_column("Enter X axis column")
+                    col2 = vis.get_valid_column("Enter Y axis column")
+                    vis.compare_scatter_by_top_genres(col1, col2)
+
                 else:
                     print("❌ Invalid sub-choice!")
             except Exception as e:
