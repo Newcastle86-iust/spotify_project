@@ -44,7 +44,8 @@ def main():
         print("4. Add a New Song to the Dataset (Interactive Input)")
         print("5. Calculate Genre Insights & Correlation Matrix")
         print("6. Generate Advanced Visualizations (Plots)")
-        print("7. Exit")
+        print("7. Reset Data (Clear all cleaning/processing)")
+        print("8. Exit")
         print("================================================================================")
         
         choice = input("Enter your choice (1-7): ")
@@ -53,18 +54,19 @@ def main():
             df_raw = loader.load_data()
             processing_label="Raw Data"
             if not df_raw.empty:
-                print("Missing Values per column:\n", df_raw.isnull().sum())
+                print("\nMissing Values per column:\n", df_raw.isnull().sum())
 
             input("\nPress any key to continue !!")
         
     
         elif choice == '2':
             if df_raw is None: input("❌ First load data"); continue
+            if df_clean is None: df_clean = df_raw.copy()
             
             numeric_cols = df_raw.select_dtypes(include=[np.number]).columns.tolist()
             
             print(f"\nAvailable numeric columns: {numeric_cols}")
-            col = input("Enter column name (or press Enter to apply to ALL): ").strip()
+            col = input("Enter column name (column1-column2-... or press Enter to apply to ALL): ").strip()
             
             print("1. Mean | 2. Median | 3. KNN")
             method = input("Select method: ")
@@ -80,7 +82,7 @@ def main():
             
             df_clean = df_raw.copy()
             
-            target_cols = [col] if col else numeric_cols
+            target_cols = col.split("-") if col else numeric_cols
             
             for c in target_cols:
                 if method == '1': df_clean = MeanImputer().impute(df_clean, c)
@@ -99,7 +101,7 @@ def main():
             numeric_cols = df_clean.select_dtypes(include=[np.number]).columns.tolist()
             
             print(f"\nAvailable numeric columns: {numeric_cols}")
-            col = input("Enter column name (or press Enter to apply to ALL): ").strip()
+            col = input("Enter column name (column1-column2-... or press Enter to apply to ALL): ").strip()
             
             print("1. IQR | 2. Z-Score")
 
@@ -117,7 +119,7 @@ def main():
             else:
                 processing_label=selected_method
             
-            target_cols = [col] if col else numeric_cols
+            target_cols = col.split("-") if col else numeric_cols
             
             handler = IQROutlierHandler() if method == '1' else ZScoreOutlierHandler()
             
@@ -226,8 +228,19 @@ def main():
 
             input("\nPress any key to continue !!")
 
-            
+        
         elif choice == '7':
+            if df_raw is None: 
+                input("\n❌ No data loaded to reset!")
+                input("Press Enter to continue...")
+            else:
+                df_clean = None
+                processing_label = "Raw Data"
+                print("✅ Data reset to original state.")
+                input("\nPress Enter to continue...")
+
+
+        elif choice == '8':
             print("\nExiting system. Goodbye!")
             break
         else:
