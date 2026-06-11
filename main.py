@@ -75,7 +75,7 @@ def main():
             selected_method = method_names.get(method, 'Unknown')
 
             if (processing_label!="Raw Data"):
-                processing_label+=f"and  {selected_method}"
+                processing_label+=f" and  {selected_method}"
 
             else:
                 processing_label=selected_method
@@ -114,7 +114,7 @@ def main():
             selected_method = method_names.get(method, 'Unknown')
 
             if (processing_label!="Raw Data"):
-                processing_label+=f"and  {selected_method}"
+                processing_label+=f" and  {selected_method}"
 
             else:
                 processing_label=selected_method
@@ -211,22 +211,32 @@ def main():
 
         elif choice == '6':
             if df_raw is None: input("❌ Load data first!"); continue
-            if df_clean is None: input("❌ Load data first!"); continue
-
+            current_df = get_current_data(df_raw, df_clean)
+            
             print("1. Compare Outliers (Box Plot)")
             print("2. Compare Trends (Scatter Plot)")
             print("3. Show Distribution (Hist Plot)")
             sub_choice = input("Select plot type: ")
             
-            current_label = processing_label if df_clean is not None else "Raw Data"
-            vis = DataVisualizer(df_raw, df_clean if df_clean is not None else df_raw, 
-                     label_before="Raw Data", label_after=current_label)
+            vis = DataVisualizer(df_raw, current_df, label_before="Raw Data", label_after=processing_label)
             
-            if sub_choice == '1': vis.compare_outliers('danceability')
-            elif sub_choice == '2': vis.compare_scatter('energy', 'danceability')
-            elif sub_choice == '3': vis.plot_distribution('danceability')
-
-            input("\nPress any key to continue !!")
+            try:
+                if sub_choice == '1':
+                    col = vis.get_valid_column("Enter column for Box Plot")
+                    vis.compare_outliers(col)
+                elif sub_choice == '2':
+                    col1 = vis.get_valid_column("Enter first column (X)")
+                    col2 = vis.get_valid_column("Enter second column (Y)")
+                    vis.compare_scatter(col1, col2)
+                elif sub_choice == '3':
+                    col = vis.get_valid_column("Enter column for Distribution")
+                    vis.plot_distribution(col)
+                else:
+                    print("❌ Invalid sub-choice!")
+            except Exception as e:
+                print(f"❌ An error occurred while plotting: {e}")
+            
+            input("\nPress Enter to continue...")
 
         
         elif choice == '7':
@@ -235,6 +245,7 @@ def main():
                 input("Press Enter to continue...")
             else:
                 df_clean = None
+                df_raw=None
                 processing_label = "Raw Data"
                 print("✅ Data reset to original state.")
                 input("\nPress Enter to continue...")

@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 class DataVisualizer:
     def __init__(self, df_before, df_after, label_before="Raw Data", label_after="Processed Data"):
@@ -12,13 +13,18 @@ class DataVisualizer:
     def compare_outliers(self, column: str):
         fig, axes = plt.subplots(1, 2, figsize=(14, 6))
         
+        # max_val = max(self.df_before[column].max(), self.df_after[column].max())
+ 
+        
+    
         sns.boxplot(data=self.df_before, y=column, ax=axes[0], color='salmon')
         axes[0].set_title(f"Before: {self.label_before}")
         
+
         sns.boxplot(data=self.df_after, y=column, ax=axes[1], color='lightgreen')
         axes[1].set_title(f"After: {self.label_after}")
         
-        plt.suptitle(f"Outlier Analysis for '{column}'", fontsize=16)
+        plt.suptitle(f"Box Plot: '{column}'", fontsize=16)
         plt.show()
 
     
@@ -47,3 +53,13 @@ class DataVisualizer:
         
         plt.title(f"Distribution of '{column}'\n(Processed via: {self.label_after})")
         plt.show()
+
+
+    def get_valid_column(self, prompt):
+
+        numeric_cols = self.df_after.select_dtypes(include=[np.number]).columns.tolist()
+        while True:
+            col = input(f"{prompt} (Available: {', '.join(numeric_cols)}): ").strip()
+            if col in numeric_cols:
+                return col
+            print(f"\n❌ Error: '{col}' is not a valid numeric column. Please try again.")

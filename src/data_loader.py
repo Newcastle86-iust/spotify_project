@@ -289,14 +289,23 @@ class DataLoader:
             return
 
         try:
-            new_song_df = pd.DataFrame([song.dict_maker()])
+            song_data = song.dict_maker()
             
-            header_needed = not os.path.exists(self.file_path) or os.stat(self.file_path).st_size == 0
+
+            last_index = self.df.iloc[:, 0].max() 
+            new_index = last_index + 1
             
+
+            final_data = {'index': new_index} 
+            final_data.update(song_data)
+            
+            new_song_df = pd.DataFrame([final_data])
+            
+            header_needed = False
             new_song_df.to_csv(self.file_path, mode='a', index=False, header=header_needed)
 
             self.df = pd.concat([self.df, new_song_df], ignore_index=True)
-            print(f"✅ Song '{song.track_name}' added successfully to RAM and CSV!!")
+            print(f"✅ Song '{song.track_name}' added successfully!!")
             
         except Exception as e:
             print(f"\n❌ Error adding song: {e}")
