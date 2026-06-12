@@ -10,21 +10,23 @@ class DataAnalyzer:
         self.processing_label = processing_label
 
     def get_correlation_matrix(self):
+        cols_to_drop = ['Unnamed: 0']
         print(f"\n--- Correlation Matrix (BEFORE: Raw Data) ---")
-        print(self.df_before.select_dtypes(include=['number']).corr())
+        print(self.df_before.drop(columns=cols_to_drop, errors='ignore').select_dtypes(include=['number']).corr())
         
         print(f"\n--- Correlation Matrix (AFTER: {self.processing_label}) ---")
-        print(self.df_after.select_dtypes(include=['number']).corr())
+        print(self.df_after.drop(columns=cols_to_drop, errors='ignore').select_dtypes(include=['number']).corr())
 
     def plot_heatmap(self):
+            cols_to_drop = ['Unnamed: 0']
             plt.figure(figsize=(10, 8))
-            corr_before = self.df_before.select_dtypes(include=['number']).corr()
+            corr_before = self.df_before.drop(columns=cols_to_drop, errors='ignore').select_dtypes(include=['number']).corr()
             sns.heatmap(corr_before, annot=True, cmap='coolwarm', fmt=".2f", annot_kws={"size": 8})
             plt.title("Before Cleaning (Raw Data)")
             plt.show() 
 
             plt.figure(figsize=(10, 8))
-            corr_after = self.df_after.select_dtypes(include=['number']).corr()
+            corr_after = self.df_after.drop(columns=cols_to_drop, errors='ignore').select_dtypes(include=['number']).corr()
             sns.heatmap(corr_after, annot=True, cmap='coolwarm', fmt=".2f", annot_kws={"size": 8})
             plt.title(f"After Cleaning ({self.processing_label})")
             plt.show()
