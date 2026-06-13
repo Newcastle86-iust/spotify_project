@@ -260,7 +260,7 @@ class Song:
     
 
 class DataLoader:
-    def __init__(self, file_path):
+    def __init__(self):
         self.base_path = Path(__file__).resolve().parent.parent
         self.file_path = self.base_path / "data" / "spotify_tracks.csv"
         self.df = None
@@ -309,3 +309,29 @@ class DataLoader:
             
         except Exception as e:
             print(f"\n❌ Error adding song: {e}")
+
+    
+    def save_clean_data(self, df_clean, file_name):
+        if df_clean is None or df_clean.empty:
+            print("❌ No cleaned data available to save!")
+            return
+
+        reports_dir = self.base_path / "reports"
+        reports_dir.mkdir(parents=True, exist_ok=True)
+
+        if not file_name.endswith('.csv'):
+            file_name += '.csv'
+
+        save_path = reports_dir / file_name
+
+        if save_path.exists():
+            print(f"\n❌ Error: A file named '{file_name}' already exists in the reports folder.")
+            print("Please try again with a different name.")
+            return
+
+        try:
+            df_clean.to_csv(save_path, index=False)
+            print(f"✅ Cleaned data successfully saved to: {save_path}")
+            
+        except Exception as e:
+            print(f"\n❌ Error saving file: {e}")

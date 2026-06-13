@@ -45,10 +45,11 @@ def main():
         print("5. Calculate Genre Insights & Correlation Matrix")
         print("6. Generate Advanced Visualizations (Plots)")
         print("7. Reset Data (Clear all cleaning/processing)")
-        print("8. Exit")
+        print("8. Save Cleaned Data to CSV (Reports)")
+        print("9. Exit")
         print("================================================================================")
         
-        choice = input("Enter your choice (1-8): ")
+        choice = input("Enter your choice (1-9): ")
 
         if choice == '1':
             df_raw = loader.load_data()
@@ -204,6 +205,7 @@ def main():
 
             if sub_choice == '1':
                 print(analyzer.get_correlation_matrix())
+
             elif sub_choice == '2':
                 analyzer.plot_heatmap()
             
@@ -256,9 +258,26 @@ def main():
                 processing_label = "Raw Data"
                 print("✅ Data reset to original state.")
                 input("\nPress Enter to continue...")
-
+        
 
         elif choice == '8':
+            if df_clean is None:
+                print("\n❌ No cleaned data available! Please clean or process the data first (Option 2 or 3).")
+                input("\nPress Enter to continue...")
+                continue
+            
+            file_name = input("\nEnter the file name to save (e.g., cleaned_spotify_data): ").strip()
+
+            file_name+=f" ({processing_label})"
+
+            if file_name:
+                loader.save_clean_data(df_clean, file_name)
+            else:
+                print("\n❌ File name cannot be empty!")
+            
+            input("\nPress Enter to continue...")
+
+        elif choice == '9':
             print("\nExiting system. Goodbye!")
             break
         else:
