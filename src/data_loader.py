@@ -260,7 +260,7 @@ class Song:
     
 
 class DataLoader:
-    def __init__(self):
+    def __init__(self,file_path):
         self.base_path = Path(__file__).resolve().parent.parent
         self.file_path = self.base_path / "data" / "spotify_tracks.csv"
         self.df = None
