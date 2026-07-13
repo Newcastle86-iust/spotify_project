@@ -11,9 +11,8 @@ class DataVisualizer:
         self.label_after = label_after
 
     def compare_outliers(self, column: str):
-        fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+        axes = plt.subplots(1, 2, figsize=(14, 6))
         
-        # max_val = max(self.df_before[column].max(), self.df_after[column].max())
  
         
     
