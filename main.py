@@ -55,6 +55,7 @@ def main():
             df_raw = loader.load_data()
             processing_label="Raw Data"
             if not df_raw.empty:
+                df_raw['time_signature'] = df_raw['time_signature'].replace(0, np.nan)
                 print("\nMissing Values per column:\n", df_raw.isnull().sum())
 
             input("\nPress any key to continue !!")
