@@ -11,7 +11,7 @@ class DataVisualizer:
         self.label_after = label_after
 
     def compare_outliers(self, column: str):
-        axes = plt.subplots(1, 2, figsize=(14, 6))
+        fig, axes = plt.subplots(1, 2, figsize=(14, 6))
         
  
         
